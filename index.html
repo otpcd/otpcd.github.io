@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>whenHold</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/main.js">
+    </script>
+</head>
+
+<body>
+
+    <p style="font-size: 10px; font-family:monospace">https://github.com/otpcd/whenHold</p>
+
+    <div class="header">
+        <h1>When Should You Have Held?</h1>
+        <p><small>Only applies to ERC20 token holdings*</small></p>
+    </div>
+
+    <div>
+        <input type="text" class="center-block-input" style="width: 60%" placeholder="Enter an ERC-20 wallet address">
+        <button class="center-block-btn" onClick="go()" spellcheck="false">Let's find out</button>
+    </div>
+
+    <div>
+        <p align="center" class="answer"></p>
+        <p align="center" class="answer"></p>
+    </div>
+
+    <div class="portfolio">
+
+
+
+    </div>
+
+
+    <script>
+
+        walletUrl = "";
+
+        async function go() {
+            var urlNode = document.querySelector(".center-block-input");
+            var firstLineNode = document.querySelectorAll(".answer")[0];
+            var secondLineNode = document.querySelectorAll(".answer")[1];
+
+            walletUrl = urlNode.value;
+            walletUrl = walletUrl.toLowerCase();
+
+            try {
+                await main(walletUrl);
+            } catch (err) {
+                firstLineNode.innerHTML = "<b>ERROR</b>";
+                firstLineNode.style.color = 'red';
+                secondLineNode.innerHTML = "";
+                return;
+            }
+
+            const finalTime = new Date(maxPortfolio.timestamp * 1000);
+            var value1 = numberWithCommas(maxPortfolio.value.toFixed(2));
+            const finalValue = "$" + value1;
+
+            firstLineNode.innerHTML = "You should have held on " + finalTime;
+            firstLineNode.style.color = 'black';
+            secondLineNode.innerHTML = "Your portfolio would be worth " + finalValue + " today.";
+
+
+
+            reset();
+
+        }
+
+    </script>
+
+    <script src="js/lodash.js"></script>
+
+</body>
+
+</html>
