@@ -45,6 +45,80 @@ function reset() {
     coinAddresses = {};
 }
 
+function createTable(arr) {
+    var html = "<tr><td>" + "<b>COIN</b>" +
+        "</td><td>" + "<b>HOLDINGS</b>" +
+        "</td><td>" + "<b>CURRENT PRICE</b>" +
+        "</td><td>" + "<b>VALUE TODAY</b>" +
+        "</td></tr>";
+
+    arr.forEach((url, index) => {
+        let s = arr[index].symbol;
+
+        let a = arr[index].amount;
+
+        let p = arr[index].price;
+        let pV = (a * p);
+
+        p = p.toString();
+        p = "$" + p;
+
+        pV = pV.toFixed(2);
+        pV = "$" + numberWithCommas(pV);
+
+        if (a % 1 != 0) {
+            a = a.toFixed(3);
+        }
+        a = numberWithCommas(a);
+
+        html = html +
+            "<tr><td>" + s +
+            "</td><td>" + a +
+            "</td><td>" + p +
+            "</td><td>" + pV +
+            "</td></tr>";
+    })
+
+
+    return html;
+
+}
+
+function orderPortfolio(obj) {
+
+    tableArray = [];
+
+    for (const property in obj) {
+        let o = {};
+        let sym = coinSymbols[property];
+        let amt = obj[property];
+        let cPrice = coinprices[property].usd;
+        let val = amt * cPrice;
+
+        o.symbol = sym;
+        o.amount = amt;
+        o.price = cPrice;
+        o.value = val;
+
+        tableArray.push(o);
+    }
+
+    sortTable(tableArray);
+    return tableArray;
+
+
+}
+
+function sortTable(arr) {
+    arr.sort((a, b) => {
+        var valueA = a.value;
+        var valueB = b.value;
+        if (valueA < valueB) return 1;
+        if (valueA > valueB) return -1;
+        return 0;
+    })
+}
+
 function calculatePortfolio(obj) {
     total = 0;
     for (const property in obj.coins) {
@@ -74,8 +148,6 @@ function split10(obj) {
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
-
-
 
 function getEthPrice() {
     return fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd')
@@ -172,8 +244,7 @@ async function main(address) {
             console.log("Adding: ", p.symbol, " Amount: ", p.amount);
             console.log("...");
         } else {
-            //check if inflow or outflow
-            //increment/decrement value from currentP object
+            //increment/decrement value
             if (p.amount > 0) {
                 currentPortfolio.coins[p.coinAddress] = currentPortfolio.coins[p.coinAddress] + p.amount;
 
