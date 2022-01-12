@@ -19,6 +19,11 @@ txObjList = [];
 network = '';
 
 class Tx {
+
+    /*
+        Custom class to extract essential info from each transaction from the txlist JSON file.
+    */
+
     constructor(coinAddress, amount, timestamp, symbol) {
         this.coinAddress = coinAddress;
         this.amount = amount;
@@ -28,6 +33,12 @@ class Tx {
 }
 
 function reset() {
+
+    /*
+        To avoid any complications from residual variable values,
+        reset() is called at the beginning and end of the main function.
+    */
+
     maxPortfolio = {
         coins: {},
         timestamp: 0,
@@ -48,6 +59,11 @@ function reset() {
 }
 
 function createTable(arr) {
+
+    /*
+        Generates string of HTML to create final portfolio table
+    */
+
     var html = "<tr><td>" + "<b>COIN</b>" +
         "</td><td>" + "<b>HOLDINGS</b>" +
         "</td><td>" + "<b>CURRENT PRICE</b>" +
@@ -112,6 +128,11 @@ function orderPortfolio(obj) {
 }
 
 function sortTable(arr) {
+
+    /*
+        Sorts the final portfolio table in descending order according to price
+    */
+
     arr.sort((a, b) => {
         var valueA = a.value;
         var valueB = b.value;
@@ -122,6 +143,12 @@ function sortTable(arr) {
 }
 
 function calculatePortfolio(obj) {
+
+    /*
+        Calculates a portfolio object (either currentPorfolio or maxPortfolio)
+        using the prices obtained from the CoinGecko calls.
+    */
+
     total = 0;
     for (const property in obj.coins) {
         try {
@@ -136,6 +163,12 @@ function calculatePortfolio(obj) {
 }
 
 function split10(obj) {
+
+    /* 
+        CoinGecko Price GET call is limited to 10 prices per call.
+        split10 takes all contract addresses and splits them into arrays of 10 strings each to be usable for multiple calls.
+    */
+
     let split = [];
     let result = [];
     for (const property in obj) {
@@ -152,18 +185,12 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function getEthPrice() {
-    return fetch('https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd')
-        .then(response => {
-            return response.json();
-        })
-        .then(res => {
-            coinprices['ethereum'] = { usd: res.ethereum.usd };
-            console.log(res);
-        })
-}
-
 function getTokenTx(link) {
+
+    /*
+        API calls to relevant chain API
+    */
+
     let scanner = "";
     let apiKey = "";
 
@@ -263,6 +290,8 @@ async function main(address, chain) {
         console.log("Promises complete");
     })
 
+
+    //clean() is necessary due to a rare bug where a CoinGecko price request returns an empty object.
     clean(coinprices);
 
     txObjList.forEach(function (url, index) {

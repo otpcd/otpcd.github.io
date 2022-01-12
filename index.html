@@ -17,7 +17,7 @@
 
     <div class="header">
         <h1>When Should You Have Held?</h1>
-        <p><small>Only applies to ERC20 and BEP20 token holdings*</small></p>
+        <p><small>Does not include native token holdings (ETH, BNB, AVAX)*</small></p>
     </div>
 
     <div>
@@ -94,9 +94,12 @@
             var value2 = numberWithCommas(currentPortfolio.value.toFixed(2));
             const finalValue = "$" + value1;
 
+            //Percentage difference calculation
+
             var percentDiff = ((maxPortfolio.value - currentPortfolio.value) / currentPortfolio.value) * 100;
             percentDiff = percentDiff.toFixed(2);
 
+            //FINAL RESULT
 
             if (currentPortfolio != maxPortfolio) {
 
