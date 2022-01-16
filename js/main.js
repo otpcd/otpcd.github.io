@@ -166,7 +166,8 @@ function split10(obj) {
 
     /* 
         CoinGecko Price GET call is limited to 10 prices per call.
-        split10 takes all contract addresses and splits them into arrays of 10 strings each to be usable for multiple calls.
+        split10 takes all contract addresses and splits them into 
+        arrays of 10 strings each to be usable for multiple calls.
     */
 
     let split = [];
@@ -245,6 +246,11 @@ function getTokenTx(link) {
 }
 
 function clean(obj) {
+
+    /*
+        Cleans any price requests that return empty objects instead of .usd properties.
+    */
+
     for (const property in obj) {
         if (obj[property].usd == undefined) {
             delete obj[property];
@@ -273,6 +279,8 @@ async function main(address, chain) {
         let p =
             fetch('https://api.coingecko.com/api/v3/simple/token_price/' + chain + '?contract_addresses=' + x[index] + '&vs_currencies=usd');
 
+        //Create Promise array for cases of >10 prices to lookup
+
         promises.push(p);
 
     })
@@ -289,7 +297,6 @@ async function main(address, chain) {
         })
         console.log("Promises complete");
     })
-
 
     //clean() is necessary due to a rare bug where a CoinGecko price request returns an empty object.
     clean(coinprices);
